@@ -75,13 +75,15 @@ const drawSin = (
 
 	ctx.beginPath()
 
-	const amp = getPositiveY(h, cfg) * 2.5
+	const { freq } = cfg
+
+	const amp = h*0.5 - getPositiveY(h, cfg)
 
 	const zero = zeroY(h)
 
 	let first = true
 
-	const frequency = 0.03
+	const frequency = freq / 1000
 
 	for (let x = PAD * 1.6; x < w; x++) {
 		let y = h / 2 + Math.sin(x * frequency + phase) * amp
@@ -203,6 +205,7 @@ type Config = {
 	len: number
 	voltage: number
 	maxVoltage: number
+	speed: number
 	controls: boolean
 }
 
@@ -213,15 +216,17 @@ const getConfig = (node: HTMLElement) => {
 	const len = Number(node.getAttribute("data-len"))
 	const maxVoltage = Number(node.getAttribute("data-max"))
 	const controls = node.getAttribute("data-controls") ? true : false
+	const speedAttr = node.getAttribute("data-speed")
+	const speed = speedAttr !== null ? Number(speedAttr) : 0.01
 
-	const config: Config = { type, voltage, freq, len, maxVoltage, controls }
+	const config: Config = { type, voltage, freq, len, maxVoltage, controls, speed }
 	return config
 }
 
 const draw = (canvas: Canvas, ctx: CanvasRenderingContext2D) => {
 	const cfg = getConfig(canvas.parentNode as HTMLElement)
 
-	const { type, freq } = cfg
+	const { type, freq, speed } = cfg
 	clear(canvas, ctx)
 
 	if (type === "AC") {
@@ -240,7 +245,7 @@ const draw = (canvas: Canvas, ctx: CanvasRenderingContext2D) => {
 
 	drawAxis(canvas, ctx, cfg)
 
-	canvas.phase += 0.01
+	canvas.phase += speed
 
 	requestAnimationFrame(() => {
 		draw(canvas, ctx)
@@ -334,7 +339,7 @@ export const initCurrentChart = (node: HTMLElement) => {
 	const cr = document.createElement("dev")
 	cr.style = "display: flex; align-items: center; justify-content: center; padding: 8px; gap: 8px;"
 
-	const { voltage, maxVoltage, len, freq, type, controls } = getConfig(node)
+	const { voltage, maxVoltage, len, freq, type, controls, speed } = getConfig(node)
 
 	canvas.style = "width: 100%; height: 100%;"
 
@@ -353,6 +358,9 @@ export const initCurrentChart = (node: HTMLElement) => {
 		const lenRange = initRange(
 			node, { value: len, min: 0, max: 1, step: 0.01, name: "data-len" },
 		)
+		const speedRange = initRange(
+			node, { value: speed, min: 0.01, max: 0.5, step: 0.01, name: "data-speed" },
+		)
 		const s = initSelect(node, type)
 
 		cr.appendChild(s)
@@ -360,6 +368,7 @@ export const initCurrentChart = (node: HTMLElement) => {
 		cr.appendChild(maxVoltageRange)
 		cr.appendChild(freqRange)
 		cr.appendChild(lenRange)
+		cr.appendChild(speedRange)
 
 		node.appendChild(cr)
 	}
