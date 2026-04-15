@@ -325,8 +325,6 @@ export const initCurrentChart = (node: HTMLElement) => {
 	canvas.phase = 0
 	const ctx = canvas.getContext("2d")
 
-	canvas.style = "width: 100%; height: 90%;"
-
 	if (!ctx) {
 		return
 	}
@@ -338,7 +336,11 @@ export const initCurrentChart = (node: HTMLElement) => {
 
 	const { voltage, maxVoltage, len, freq, type, controls } = getConfig(node)
 
+	canvas.style = "width: 100%; height: 100%;"
+
 	if (controls) {
+		canvas.style = "width: 100%; height: 90%;"
+
 		const voltageRange = initRange(
 			node, { value: voltage, min: 0, max: 300, step: 1, name: "data-voltage" },
 		)
