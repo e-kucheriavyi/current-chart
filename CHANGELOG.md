@@ -1,3 +1,7 @@
+# 1.1.0
+
+- feat: opts
+
 # 1.0.1
 
 - fix: canvas height without controls
