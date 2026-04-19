@@ -1,3 +1,7 @@
+# 1.2.0
+
+- feat: transformer demo
+
 # 1.1.0
 
 - feat: opts
