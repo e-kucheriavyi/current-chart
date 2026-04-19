@@ -358,7 +358,7 @@ export const initCurrentChart = (node: HTMLElement, options: CurrentChartOpts = 
 		gridWidth: options.gridWidth ?? 8.0,
 		gridColor: options.gridColor ?? "#fff",
 		lineWidth: options.lineWidth ?? 16.0,
-		lineColor: options.lineColor ?? "red",
+		lineColor: options.lineColor ?? "blue",
 		font: options.font ?? "32px bold",
 		padding: options.padding ?? 16,
 		fpsSkip: options.fpsSkip ?? 2,
