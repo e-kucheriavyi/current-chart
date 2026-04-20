@@ -1,4 +1,4 @@
-import { throttle, lerp, colorOpactity } from "./utils.ts"
+import { throttle, lerp, colorOpacity } from "./utils.ts"
 import { initRange } from "./controls.ts"
 
 type Canvas = HTMLCanvasElement & {
@@ -222,7 +222,7 @@ const drawCoil: Stage = (canvas, ctx, cfg, opts) => {
 	ctx.lineWidth = cfg.firstCoilWidth
 
 	ctx.strokeStyle = "#ffa500"
-	ctx.strokeStyle = colorOpactity(ctx.strokeStyle, 0.6)
+	ctx.strokeStyle = colorOpacity(ctx.strokeStyle, 0.6)
 
 	ctx.beginPath()
 
@@ -282,7 +282,7 @@ const drawCoils: Stage = (canvas, ctx, cfg, opts) => {
 	const bx = cx + side * 0.5
 
 	ctx.lineCap = "round"
-
+	ctx.lineJoin = "round"
 	ctx.lineWidth = cfg.firstCoilWidth
 
 	ctx.beginPath()

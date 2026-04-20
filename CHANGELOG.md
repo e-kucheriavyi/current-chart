@@ -1,3 +1,8 @@
+# 1.2.1
+
+- fix: typo
+- fix: hex color cases
+
 # 1.2.0
 
 - feat: transformer demo

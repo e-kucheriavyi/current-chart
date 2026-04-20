@@ -16,15 +16,21 @@ export const formatValue = (value: number) => {
 	if (value <= 1) {
 		return value.toFixed(2)
 	}
-	return `${value < 10 ? '0' : ''}${value}`
+	return value.toString().padStart(2, "0")
 }
 
-export const colorOpactity = (color: string, opacity: number) => {
+export const colorOpacity = (color: string, opacity: number) => {
 	if (color.startsWith("#")) {
 		const alpha = Math.floor(opacity * 255)
-		const a = `${alpha < 10 ? "0" : ""}${(alpha).toString(16)}`
-		const res = `${color}${a}`
-		return res
+		const a = (alpha).toString(16).padStart(2, "0")
+		switch (color.length) {
+			case 7: return `${color}${a}` // #rrggbb
+			case 4: // #rgb
+				const [r, g, b] = color.replace("#", "").split("")
+				return `#${r}${r}${g}${g}${b}${b}${a}`
+			case 9: return `${color.slice(0, 7)}${a}` // #rrggbbaa
+			default: return color // ?
+		}
 	} else if (color.startsWith("rgba")) {
 		const vals = color
 			.replace("rgba(", "")
