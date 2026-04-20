@@ -1,4 +1,4 @@
-import { throttle, lerp, colorOpacity } from "./utils.ts"
+import { throttle, lerp, scaleColor } from "./utils.ts"
 import { initRange } from "./controls.ts"
 
 type Canvas = HTMLCanvasElement & {
@@ -222,7 +222,7 @@ const drawCoil: Stage = (canvas, ctx, cfg, opts) => {
 	ctx.lineWidth = cfg.firstCoilWidth
 
 	ctx.strokeStyle = "#ffa500"
-	ctx.strokeStyle = colorOpacity(ctx.strokeStyle, 0.6)
+	ctx.strokeStyle = scaleColor(ctx.strokeStyle, 0.6)
 
 	ctx.beginPath()
 
@@ -401,7 +401,7 @@ export type TransformerOpts = {
 	padding?: number
 }
 
-export const initTransfromerDemo = (node: HTMLElement, options: TransformerOpts = {}) => {
+export const initTransformerDemo = (node: HTMLElement, options: TransformerOpts = {}) => {
 	const opts: Opts = {
 		resolutionScale: options.resolutionScale ?? 2.0,
 		lineWidth: options.lineWidth ?? 16.0,

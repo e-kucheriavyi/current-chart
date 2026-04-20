@@ -52,3 +52,36 @@ export const colorOpacity = (color: string, opacity: number) => {
 	}
 }
 
+export const scaleColor = (color: string, scale: number) => {
+	if (color.startsWith("#")) {
+		const c = color.replace("#", "")
+
+		const mul = (v: string) => (parseInt(v, 16)*scale).toString(16).padStart(2, "0")
+
+		switch (c.length) {
+			case 3: {
+				const [r, g, b] = c.split("")
+				return `#${mul(r)}${mul(g)}${mul(b)}`
+			}
+			case 6: {
+				const r = c.slice(0, 2)
+				const g = c.slice(2, 4)
+				const b = c.slice(4, 6)
+				const res = `#${mul(r)}${mul(g)}${mul(b)}`
+				return res
+			}
+			case 8: {
+				const r = c.slice(0, 2)
+				const g = c.slice(2, 4)
+				const b = c.slice(4, 6)
+				const a = c.slice(6, 8)
+				return `#${mul(r)}${mul(g)}${mul(b)}${a}`
+			}
+			default:
+				return color
+		}
+	} else {
+		return color
+	}
+}
+

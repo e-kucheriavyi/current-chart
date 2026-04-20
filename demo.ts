@@ -1,5 +1,4 @@
-import { initCurrentChart } from "./src"
-import { initTransfromerDemo } from "./src"
+import { initCurrentChart, initRelayDemo, initTransformerDemo } from "./src"
 
 const init = () => {
 	const nodes = document.querySelectorAll(".current-chart")
@@ -11,7 +10,13 @@ const init = () => {
 	const nodes2 = document.querySelectorAll(".transformer-demo")
 
 	nodes2.forEach((node) => {
-		initTransfromerDemo(node as HTMLElement)
+		initTransformerDemo(node as HTMLElement)
+	})
+
+	const nodes3 = document.querySelectorAll(".relay-demo")
+
+	nodes3.forEach((node) => {
+		initRelayDemo(node as HTMLElement)
 	})
 }
 

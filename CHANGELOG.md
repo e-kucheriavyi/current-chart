@@ -1,3 +1,8 @@
+# 1.3.0
+
+- feat: relay demo
+- fix: `transfromer` typo
+
 # 1.2.1
 
 - fix: typo
