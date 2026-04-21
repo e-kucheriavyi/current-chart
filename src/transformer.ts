@@ -24,6 +24,7 @@ type Config = {
 	stage: number
 	controls: boolean
 	speed: number
+	freq: number
 	firstCoilWidth: number
 	secondCoilWidth: number
 	firstCoilSteps: number
@@ -38,11 +39,13 @@ const getConfig = (canvas: Canvas) => {
 	const awidth = p.getAttribute("data-first-width") ?? 8
 	const bwidth = p.getAttribute("data-second-width") ?? 128
 	const speed = p.getAttribute("data-speed") ?? 0.05
+	const freq = p.getAttribute("data-freq") ?? 10
 	const controls = p.getAttribute("data-controls") ?? false
 	const cfg: Config = {
 		stage: Number(stg),
 		controls: Boolean(controls),
 		speed: Number(speed),
+		freq: Number(freq),
 		firstCoilWidth: Number(awidth),
 		secondCoilWidth: Number(bwidth),
 		firstCoilSteps: Number(asteps),
@@ -154,29 +157,30 @@ const drawWireWave: Stage = (canvas, ctx, cfg, opts) => {
 	ctx.strokeStyle = opts.waveColor
 
 	ctx.beginPath()
+	
+	const { freq } = cfg
 
-	for(let i = 0; i < 16; i++) {
-		ctx.moveTo(100, cy)
-		ctx.quadraticCurveTo(
-			cw * 0.5,
-			cy + (i + 1) * (100 + canvas.phaseWave),
-			cw - 100,
-			cy,
-		)
-	}
-	for(let i = 0; i < 16; i++) {
-		ctx.moveTo(100, cy)
-		ctx.quadraticCurveTo(
-			cw * 0.5,
-			cy - (i + 1) * (100 + canvas.phaseWave),
-			cw - 100,
-			cy,
-		)
-	}
+	const amp = ch * 0.3
 
+	let first = true
+
+	const frequency = freq / 1000
+
+	const p = opts.padding
+
+	for (let x = p * 1.6; x < cw; x++) {
+		let y = ch * 0.5 + Math.sin(x * frequency + canvas.phaseWave) * amp
+	
+		if (first) {
+			ctx.moveTo(x, y)
+			first = false
+		} else {
+			ctx.lineTo(x, y)
+		}
+	}
 	ctx.stroke()
 
-	canvas.phaseWave += cfg.speed * 10
+	canvas.phaseWave += cfg.speed
 
 	// line
 
@@ -221,6 +225,8 @@ const drawCoil: Stage = (canvas, ctx, cfg, opts) => {
 	ctx.lineJoin = "round"
 	ctx.lineWidth = cfg.firstCoilWidth
 
+	// inner wires
+
 	ctx.strokeStyle = "#ffa500"
 	ctx.strokeStyle = scaleColor(ctx.strokeStyle, 0.6)
 
@@ -241,6 +247,30 @@ const drawCoil: Stage = (canvas, ctx, cfg, opts) => {
 
 	ctx.stroke()
 
+	// waves
+	
+	let start = canvas.phaseWave
+	
+	ctx.strokeStyle = "blue"
+
+	ctx.beginPath()
+	ctx.ellipse(x - side * 0.05, y + side * 0.25, 50, side * 0.4, 0, start, start + Math.PI * 1.9)
+	ctx.stroke()
+	ctx.beginPath()
+	ctx.ellipse(x + side * 0.25, y + side * 0.25, 50, side * 0.4, 0, start, start + Math.PI * 1.9)
+	ctx.stroke()
+
+	start += Math.PI * 0.5
+
+	ctx.beginPath()
+	ctx.ellipse(x - side * 0.05, y + side * 0.25, 75, side * 0.45, 0, start, start + Math.PI * 1.9)
+	ctx.stroke()
+	ctx.beginPath()
+	ctx.ellipse(x + side * 0.25, y + side * 0.25, 75, side * 0.45, 0, start, start + Math.PI * 1.9)
+	ctx.stroke()
+
+	// outer wires
+
 	ctx.strokeStyle = opts.wireColor
 
 	ctx.beginPath()
@@ -257,6 +287,8 @@ const drawCoil: Stage = (canvas, ctx, cfg, opts) => {
 	}
 
 	ctx.stroke()
+
+	canvas.phaseWave += cfg.speed
 }
 
 const drawCoils: Stage = (canvas, ctx, cfg, opts) => {
