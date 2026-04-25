@@ -4,6 +4,7 @@ import { throttle, lerp, scaleColor } from "./utils.ts"
 type Canvas = HTMLCanvasElement & {
 	skipped: number
 	t: number
+	mounted: boolean
 }
 
 type Config = {
@@ -261,6 +262,10 @@ const drawRelay: Stage = (canvas, ctx, cfg, opts) => {
 }
 
 const draw = (canvas: Canvas, ctx: CanvasRenderingContext2D, opts: Opts) => {
+	if (!canvas || !canvas.mounted) {
+		return
+	}
+
 	canvas.skipped += 1
 
 	if (canvas.skipped >= opts.fpsSkip) {
@@ -318,10 +323,11 @@ export const initRelayDemo = (node: HTMLElement, options: RelayOpts = {}) => {
 	const canvas = document.createElement("canvas") as Canvas
 	canvas.skipped = 0
 	canvas.t = 0
+	canvas.mounted = true
 	const ctx = canvas.getContext("2d")
 
 	if (!ctx) {
-		return
+		return () => {}
 	}
 
 	node.appendChild(canvas)
@@ -353,8 +359,15 @@ export const initRelayDemo = (node: HTMLElement, options: RelayOpts = {}) => {
 
 	resize(canvas, opts)
 
-	window.addEventListener("resize", throttle(() => { resize(canvas, opts) }))
+	const res = throttle(() => { resize(canvas, opts) })
+
+	window.addEventListener("resize", res)
 
 	draw(canvas, ctx, opts)
+
+	return () => {
+		canvas.mounted = false
+		window.removeEventListener("resize", res)
+	}
 }
 

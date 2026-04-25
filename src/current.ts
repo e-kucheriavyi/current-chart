@@ -5,6 +5,7 @@ import { initRange, initSelect } from "./controls.ts"
 type Canvas = HTMLCanvasElement & {
 	phase: number
 	skipped: number
+	mounted: boolean
 }
 
 const zeroY = (h: number) => h * 0.5
@@ -210,6 +211,10 @@ const getConfig = (node: HTMLElement) => {
 }
 
 const draw = (canvas: Canvas, ctx: CanvasRenderingContext2D, opts: Opts) => {
+	if (!canvas || !canvas.mounted) {
+		return
+	}
+
 	canvas.skipped += 1
 
 	if (canvas.skipped >= opts.fpsSkip) {
@@ -290,10 +295,11 @@ export const initCurrentChart = (node: HTMLElement, options: CurrentChartOpts = 
 	const canvas = document.createElement("canvas") as Canvas
 	canvas.phase = 0
 	canvas.skipped = 0
+	canvas.mounted = true
 	const ctx = canvas.getContext("2d")
 
 	if (!ctx) {
-		return
+		return () => {}
 	}
 
 	node.appendChild(canvas)
@@ -338,8 +344,14 @@ export const initCurrentChart = (node: HTMLElement, options: CurrentChartOpts = 
 
 	resize(canvas, opts)
 
-	window.addEventListener("resize", throttle(() => { resize(canvas, opts) }))
+	const res = throttle(() => { resize(canvas, opts) })
+	window.addEventListener("resize", res)
 
 	draw(canvas, ctx, opts)
+
+	return () => {
+		canvas.mounted = false
+		window.removeEventListener("resize", res)
+	}
 }
 

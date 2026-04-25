@@ -9,6 +9,7 @@ type Canvas = HTMLCanvasElement & {
 	wireSize: number
 	waveWireSize: number
 	wireSizeTransition: number
+	mounted: boolean
 }
 
 const resize = (canvas: Canvas, opts: Opts) => {
@@ -385,6 +386,10 @@ const stages: Stage[] = [
 ]
 
 const draw = (canvas: Canvas, ctx: CanvasRenderingContext2D, opts: Opts) => {
+	if (!canvas || !canvas.mounted) {
+		return
+	}
+
 	canvas.skipped += 1
 
 	if (canvas.skipped >= opts.fpsSkip) {
@@ -453,10 +458,11 @@ export const initTransformerDemo = (node: HTMLElement, options: TransformerOpts 
 	canvas.wireSize = 0.2
 	canvas.waveWireSize = 0.1
 	canvas.wireSizeTransition = 0
+	canvas.mounted = true
 	const ctx = canvas.getContext("2d")
 
 	if (!ctx) {
-		return
+		return () => {}
 	}
 
 	node.appendChild(canvas)
@@ -497,8 +503,14 @@ export const initTransformerDemo = (node: HTMLElement, options: TransformerOpts 
 
 	resize(canvas, opts)
 
-	window.addEventListener("resize", throttle(() => { resize(canvas, opts) }))
+	const res = throttle(() => { resize(canvas, opts) })
+	window.addEventListener("resize", res)
 
 	draw(canvas, ctx, opts)
+
+	return () => {
+		canvas.mounted = false
+		window.removeEventListener("resize", res)
+	}
 }
 
