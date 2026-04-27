@@ -1,3 +1,8 @@
+# 1.3.3
+
+- fix: transformer demo colors
+- feat: relay wire color opt
+
 # 1.3.2
 
 - feat: killing chart

@@ -40,9 +40,9 @@ const clear = (canvas: Canvas, ctx: CanvasRenderingContext2D) => {
 
 type Stage = (canvas: Canvas, ctx: CanvasRenderingContext2D, cfg: Config, opts: Opts) => void
 
-const drawCoil: Stage = (canvas, ctx, _cfg, _opts) => {
+const drawCoil: Stage = (canvas, ctx, _cfg, opts) => {
 	// coil
-	const fg = "orange"
+	const fg = opts.wireColor
 	ctx.fillStyle = fg
 	const bg = scaleColor(ctx.fillStyle, 0.8)
 
@@ -187,7 +187,7 @@ const drawLever: Stage = (canvas, ctx, _cfg, _opts) => {
 	ctx.restore()
 }
 
-const drawPins: Stage = (canvas, ctx, _cfg, _opts) => {
+const drawPins: Stage = (canvas, ctx, _cfg, opts) => {
 	const pins = {
 		x: 0.37,
 		y: -0.3,
@@ -202,7 +202,7 @@ const drawPins: Stage = (canvas, ctx, _cfg, _opts) => {
 	ctx.lineJoin = "round"
 	ctx.lineCap = "round"
 	ctx.lineWidth = pins.w
-	ctx.strokeStyle = "orange"
+	ctx.strokeStyle = opts.wireColor
 
 	let x = 0
 
@@ -303,6 +303,7 @@ type Opts = {
 	resolutionScale: number
 	font: string
 	padding: number
+	wireColor: string
 }
 
 export type RelayOpts = {
@@ -310,6 +311,7 @@ export type RelayOpts = {
 	resolutionScale?: number
 	font?: string
 	padding?: number
+	wireColor?: string
 }
 
 export const initRelayDemo = (node: HTMLElement, options: RelayOpts = {}) => {
@@ -318,6 +320,7 @@ export const initRelayDemo = (node: HTMLElement, options: RelayOpts = {}) => {
 		font: options.font ?? "32px bold",
 		padding: options.padding ?? 16,
 		fpsSkip: options.fpsSkip ?? 2,
+		wireColor: options.wireColor ?? "orange",
 	}
 
 	const canvas = document.createElement("canvas") as Canvas

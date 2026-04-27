@@ -252,7 +252,7 @@ const drawCoil: Stage = (canvas, ctx, cfg, opts) => {
 	
 	let start = canvas.phaseWave
 	
-	ctx.strokeStyle = "blue"
+	ctx.strokeStyle = opts.waveColor
 
 	ctx.beginPath()
 	ctx.ellipse(x - side * 0.05, y + side * 0.25, 50, side * 0.4, 0, start, start + Math.PI * 1.9)
@@ -444,7 +444,7 @@ export const initTransformerDemo = (node: HTMLElement, options: TransformerOpts 
 		lineWidth: options.lineWidth ?? 16.0,
 		wireColor: options.wireColor ?? "orange",
 		particleColor: options.particleColor ?? "blue",
-		waveColor: options.particleColor ?? "blue",
+		waveColor: options.waveColor ?? "blue",
 		font: options.font ?? "32px bold",
 		padding: options.padding ?? 16,
 		fpsSkip: options.fpsSkip ?? 2,
